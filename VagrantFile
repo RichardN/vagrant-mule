@@ -2,29 +2,26 @@
 # vi: set ft=ruby :
  
 Vagrant::Config.run do |config|
-  config.vm.box = "precise64"
-  config.vm.box_url = "http://files.vagrantup.com/lucid64.box"
+  config.vm.box = "pre64"
+  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
   
-  config.vm.provision :shell, :inline => "gem install chef --version 11.4.2 --no-rdoc --no-ri --conservative"
+  config.vm.provision :shell, :inline => "gem install puppet --version 3.2.3 --no-rdoc --no-ri --conservative"
   config.vm.provision :shell, :inline => "apt-get update"
   # Otherwise java install will fail with missing dependencies
 
-  config.vm.provision :chef_solo do |chef|
-    chef.log_level = :debug
-    # Config.
-    chef.json = {
-      :maven => {
-        :version => "3",
-        :setup_bin => false
-      }
-    }
-    
-    chef.cookbooks_path = "cookbooks"  
 
-    chef.add_recipe "java"
-    chef.add_recipe "git"
-    chef.add_recipe "ark"
-    chef.add_recipe "maven"
-    chef.add_recipe "mule"
+
+  config.vm.provision :puppet do |puppet|
+    puppet.log_level = "debug"
+    puppet.module_path = "modules"
   end
+
+
+
+#    chef.add_recipe "java"
+#    chef.add_recipe "git"
+#    chef.add_recipe "ark"
+#    chef.add_recipe "maven"
+#    chef.add_recipe "mule"
+#  end
 end
